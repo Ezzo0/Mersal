@@ -2,7 +2,8 @@
   "name": "mersal-backend",
   "version": "1.0.0",
   "description": "backend for mersal chat application",
-  "main": "index.js",
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
@@ -16,6 +17,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "mersal": "file:..",
     "mongoose": "^8.10.1"
   },
   "devDependencies": {

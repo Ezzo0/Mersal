@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
 router.get("/signup", (req, res) => {
@@ -13,4 +13,4 @@ router.get("/logout", (req, res) => {
   res.send("logout endpoint");
 });
 
-module.exports = router;
+export default router;
