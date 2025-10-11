@@ -23,7 +23,8 @@
     "jsonwebtoken": "^9.0.2",
     "mersal": "file:..",
     "mongoose": "^8.10.1",
-    "nodemailer": "^7.0.9"
+    "nodemailer": "^7.0.9",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

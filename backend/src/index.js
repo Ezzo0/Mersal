@@ -4,11 +4,11 @@ dotenv.config();
 import express from "express";
 import cookieParser from "cookie-parser";
 import path from "path";
-const app = express();
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import connectDB from "./lib/db.js";
 import cors from "cors";
+import { server, app } from "./lib/socket.js";
 
 // Constants
 const port = process.env.PORT || 3000;
@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   connectDB();
 });
