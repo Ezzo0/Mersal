@@ -21,7 +21,12 @@ router.post("/logout", protectRoute, logout);
 router.put("/update-profile", protectRoute, updateProfile);
 
 router.get("/check-auth", protectRoute, (req, res) => {
-  res.status(200).json({ user: req.user });
+  res.status(200).json({
+    id: req.user._id,
+    fullName: req.user.fullName,
+    email: req.user.email,
+    profilePic: req.user.profilePic,
+  });
 });
 
 export default router;

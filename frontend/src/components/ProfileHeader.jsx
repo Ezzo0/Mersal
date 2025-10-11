@@ -23,6 +23,8 @@ function ProfileHeader() {
       const base64Image = reader.result;
       setSelectedImg(base64Image);
       await updateProfile({ profilePic: base64Image });
+      // Clear selectedImg after successful update since authUser.profilePic will be updated
+      setSelectedImg(null);
     };
   };
 
@@ -36,6 +38,7 @@ function ProfileHeader() {
               className="size-14 rounded-full overflow-hidden relative group"
               onClick={() => fileInputRef.current.click()}
             >
+              {/* {console.log("authUser.profilePic is:", authUser.profilePic)} */}
               <img
                 src={selectedImg || authUser.profilePic || "/avatar.png"}
                 alt="User image"

@@ -110,8 +110,10 @@ export const updateProfile = async (req, res) => {
     const updatedUser = await User.findById(userId).select("-password");
 
     return res.status(200).json({
-      message: "Profile picture updated successfully",
-      user: updatedUser,
+      id: updatedUser._id,
+      fullName: updatedUser.fullName,
+      email: updatedUser.email,
+      profilePic: updatedUser.profilePic,
     });
   } catch (error) {
     console.log("Error in updateProfile controller", error);
