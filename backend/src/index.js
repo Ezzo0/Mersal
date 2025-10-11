@@ -8,12 +8,19 @@ const app = express();
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import connectDB from "./lib/db.js";
+import cors from "cors";
 
 // Constants
 const port = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
 // Middleware
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
