@@ -1,7 +1,6 @@
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 import cloudinary from "../lib/cloudinary.js";
-import { getReceiverSocketId, io } from "../lib/socket.js";
 
 export const getAllContacts = async (req, res) => {
   try {
@@ -34,24 +33,22 @@ export const getMessagesByUserId = async (req, res, next) => {
   }
 };
 
-export const sendMessage = async (req, res) => {
+export const sendMessage = async (socket, receivedMessage, connectedUsers) => {
   try {
-    const { text, image } = req.body;
+    const { text, image } = receivedMessage;
     if (!text && !image) {
-      return res.status(400).json({ message: "All fields are required" });
+      return { success: false, info: "All fields are required" };
     }
-    const senderId = req.user._id;
-    const receiverId = req.params.id;
+    const senderId = socket.user._id;
+    const receiverId = receivedMessage.receiverId;
 
     if (senderId.toString() === receiverId.toString()) {
-      return res
-        .status(400)
-        .json({ message: "You cannot send message to yourself" });
+      return { success: false, info: "You cannot send message to yourself" };
     }
 
     const receiver = await User.findById(receiverId);
     if (!receiver) {
-      return res.status(400).json({ message: "Receiver not found" });
+      return { success: false, info: "Receiver not found" };
     }
 
     let imageUrl;
@@ -69,15 +66,15 @@ export const sendMessage = async (req, res) => {
     await message.save();
 
     // todo: send message to socket
-    const receiverSocketId = getReceiverSocketId(receiverId);
+    const receiverSocketId = connectedUsers[receiverId];
     if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", message);
+      socket.to(receiverSocketId).emit("newMessage", message);
     }
 
-    res.status(201).json(message);
+    return { success: true, info: message };
   } catch (error) {
     console.log("Error in sendMessage controller", error);
-    res.status(500).json({ message: "Internal server error" });
+    return { success: false, info: "Internal server error" };
   }
 };
 

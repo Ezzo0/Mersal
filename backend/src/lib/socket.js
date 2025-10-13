@@ -3,6 +3,7 @@ import { createServer } from "http";
 import express from "express";
 import dotenv from "dotenv";
 import { socketAuthMiddleware } from "../middlewares/socket.auth.middleware.js";
+import { sendMessage } from "../controllers/message.controller.js";
 
 dotenv.config();
 
@@ -21,15 +22,8 @@ io.use(socketAuthMiddleware);
 // Connected Users
 const connectedUsers = {}; // { userId: socketId }
 
-// we will use this function to check if the user is online or not
-export function getReceiverSocketId(userId) {
-  return connectedUsers[userId];
-}
-
 // Handle connections
 io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.user.fullName}`);
-
   connectedUsers[socket.userId] = socket.id;
 
   // Send connected users to all clients
@@ -37,14 +31,14 @@ io.on("connection", (socket) => {
 
   // Handle disconnections
   socket.on("disconnect", () => {
-    console.log(`User disconnected: ${socket.user.fullName}`);
     delete connectedUsers[socket.userId];
     io.emit("userDisconnected", socket.userId);
   });
 
   // Handle messages
-  socket.on("sendMessage", (message) => {
-    console.log(`Message received: ${message.text}`);
+  socket.on("sendMessage", async (message) => {
+    const result = await sendMessage(socket, message, connectedUsers);
+    socket.emit("sendMessageResponse", result);
   });
 });
 
